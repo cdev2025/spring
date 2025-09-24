@@ -3,6 +3,6 @@
 <head><title>Hello Spring MVC</title></head>
 
 <body>
-    <h1>Hello, ${msg}!</h1>
+    <h1>Hello, ${textFromController}!</h1>
 </body>
 </html>
