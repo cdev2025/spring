@@ -2,6 +2,7 @@ package com.mycompany.mvcproject.controller;
 
 import com.mycompany.mvcproject.domain.SendEmailRequest;
 import com.mycompany.mvcproject.service.EmailServiceClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -9,13 +10,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/email")
 public class EmailController {
+    @Autowired  // 1. 필드 의존성 주입 (권장 x)
+    private EmailServiceClient emailServiceClient;
     
     // http://localhost:8080/email/sendEmail
     @RequestMapping("/sendEmail")
     @ResponseBody
     public String sendEmail(){
         // 이메일을 보내는 서비스 클라이언트 객체 생성
-        EmailServiceClient emailServiceClient = new EmailServiceClient();
+        // EmailServiceClient emailServiceClient = new EmailServiceClient();
         // 이메일 내용 작성
         SendEmailRequest sendEmailRequest = generateEmailRequest();
 

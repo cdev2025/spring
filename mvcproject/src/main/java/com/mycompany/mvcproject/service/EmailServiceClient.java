@@ -1,8 +1,11 @@
 package com.mycompany.mvcproject.service;
 
 import com.mycompany.mvcproject.domain.SendEmailRequest;
+import org.springframework.stereotype.Service;
 
-// 관심사만 분리 : Email 서비스 관련 로직 담당
+// 1. 관심사만 분리 : Email 서비스 관련 로직 담당
+// 2. Service Bean 등록 => Application Context에서 관리(Spring)
+@Service
 public class EmailServiceClient {
 
     // 이메일 발송을 담당하는 메서드
