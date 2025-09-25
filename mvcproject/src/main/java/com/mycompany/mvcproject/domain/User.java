@@ -1,6 +1,11 @@
 package com.mycompany.mvcproject.domain;
 
 public class User {
+    // 상수 필드로 로그인 정보 정의 (DB 정보 대체)
+    public static final String DEFAULT_EMAIL = "test@test.com";
+    public static final String DEFAULT_PASSWORD = "1234!";
+    public static final String DEFAULT_NAME = "홍길동";
+
     private int id; // DB의 primary key 역할
     private String name;
     private String email;
