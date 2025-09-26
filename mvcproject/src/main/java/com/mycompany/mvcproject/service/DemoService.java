@@ -17,7 +17,14 @@ public class DemoService {
      * @param name : 작업 대상 이름 (null 일 경우 "익명"으로 처리)
      * @return : 작업 완료 메시지
      */
+    public String doWork(String name){
+        // null 처리
+        String targetName = (name==null) ? "익명" : name;
 
+        System.out.println("[비즈니스 로직] 작업 수행 중: " +  targetName);
+
+        return "작업 완료: " + targetName;
+    }
 
     /**
      * 의도적으로 지연 시간을 발생하는 메서드
@@ -28,6 +35,19 @@ public class DemoService {
      * @param ms : 지연시간(밀리처). null이면 기본값 1000ms 사용
      * @return : 지연 작업 완료 메시지
      */
+    public String slowTask(Integer ms){
+        int sleepTime = (ms==null) ? 1000 : ms;
+
+        try {
+            System.out.println("[비즈니스 로직] " + sleepTime + "ms 지연 작업 시작");
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // 스레드 인터럽트 발생 시 인터럽트 상태 복원 (권장 패턴)
+            System.out.println("[비즈니스 로직] 작업이 중단되었습니다.");
+        }
+
+        return "지연 작업 완료: " +sleepTime + "ms";
+    }
 
     /**
      * 다양한 예외를 발생시키는 메서드
@@ -39,6 +59,21 @@ public class DemoService {
      * @throws RuntimeException : type이 "runtime"인 경우
      * @throws IllegalArgumentException : type이 "illegal"인 경우
      */
+    public String errorTask(String type){
+        System.out.println("[비즈니스 로직] 예외 발생 시뮬레이션: " + type);
+
+        switch(type){
+            case "runtime":
+                // 런타임 예외
+                throw new RuntimeException("런타임 예외 발생!");
+            case "illegal":
+                // 잘못된 인자(파라미터)
+                throw new IllegalArgumentException("잘못된 인자 예외!");
+            default:
+                System.out.println("[비즈니스 로직] 정상적인 처리가 완료되었습니다.");
+                return "정상 처리 완료";
+        }
+    }
 
     /**
      * 간단한 계산을 수행하는 메서드
@@ -49,4 +84,10 @@ public class DemoService {
      * @param b : 두번째 숫자
      * @return 계산 결과 메시지
      */
+    public String calculateSum(int a, int b){
+        System.out.println("[비즈니스 로직] 계산 수행: " + a + " + " + b);
+
+        int result = a+b;
+        return "계산 결과: " + a + " + " + b + " = " + result;
+    }
 }
