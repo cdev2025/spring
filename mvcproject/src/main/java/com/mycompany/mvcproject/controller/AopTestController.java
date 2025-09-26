@@ -37,6 +37,7 @@ public class AopTestController {
     // 느린 작업 테스트
     // http://localhost:8080/aop-test/slow
     // http://localhost:8080/aop-test/slow?ms=2700
+    // http://localhost:8080/aop-test/slow?ms=900
     @GetMapping("/slow")
     @ResponseBody
     public String testSlow(@RequestParam(defaultValue = "1500") Integer ms){
