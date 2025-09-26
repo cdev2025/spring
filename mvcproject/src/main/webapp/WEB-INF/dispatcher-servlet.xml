@@ -3,25 +3,35 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="
           http://www.springframework.org/schema/beans
           https://www.springframework.org/schema/beans/spring-beans.xsd
           http://www.springframework.org/schema/context
           https://www.springframework.org/schema/context/spring-context.xsd
           http://www.springframework.org/schema/mvc
-          https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+          https://www.springframework.org/schema/mvc/spring-mvc.xsd
+          http://www.springframework.org/schema/aop
+          http://www.springframework.org/schema/aop/spring-aop.xsd" >
 
-    <!-- @Controller 스캔 -->
+    <!--컴포넌트 스캔: @Controller, @Service, @Component, @Aspect 자동 등록 -->
     <context:component-scan base-package="com.mycompany.mvcproject" />
 
-    <!-- Spring MVC 기본 설정 -->
+    <!-- 어노테이션 기반 설정 활성화 -->
+    <context:annotation-config />
     <mvc:annotation-driven />
+
+    <!-- AOP 프록시 자동 생성 활성화 -->
+    <aop:aspectj-autoproxy />
 
     <!-- View Resolver (JSP 사용) -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
+
+    <!-- 정적 리소스 처리 -->
+    <mvc:resources mapping="/resources/**" location="/resources/" />
 </beans>
 
 

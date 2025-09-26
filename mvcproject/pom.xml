@@ -31,6 +31,35 @@
           <version>5.3.39</version>
       </dependency>
 
+      <!-- Spring Context (DI 및 @Component, @Service 등 어노테이션 지원) -->
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+          <version>5.3.39</version>
+      </dependency>
+
+      <!-- Spring AOP -->
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-aop</artifactId>
+          <version>5.3.39</version>
+      </dependency>
+
+      <!-- AspectJ Weaver (AOP 어노테이션 지원) -->
+      <dependency>
+          <groupId>org.aspectj</groupId>
+          <artifactId>aspectjweaver</artifactId>
+          <version>1.9.22</version>
+      </dependency>
+
+      <!-- JSTL (JSP 표준 태그 라이브러리) -->
+      <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>jstl</artifactId>
+          <version>1.2</version>
+      </dependency>
+
+
       <!--   Sevlet API (톰캣이 제공)   -->
       <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
       <dependency>
