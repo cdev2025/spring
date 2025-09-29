@@ -28,4 +28,6 @@ public class UserController {
         // return "success"; // @ResponseBody인 경우 => String "success" 그대로 return
         return "redirect:http://localhost:8080/hello";
     }
+
+    // 
 }

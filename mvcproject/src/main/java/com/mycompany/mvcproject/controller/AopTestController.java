@@ -72,6 +72,8 @@ public class AopTestController {
 
     // 중요한 계산 테스트
     // http://localhost:8080/aop-test/important-calc
+    // http://localhost:8080/aop-test/important-calc?x3&y=0&op=/
+    // http://localhost:8080/aop-test/important-calc?op=%
     @GetMapping("/important-calc")
     @ResponseBody
     public String testImportantCalc(
@@ -80,5 +82,19 @@ public class AopTestController {
             @RequestParam(defaultValue = "+") String op
     ){
         return demoService.importantCalculation(x, y, op);
+    }
+
+    // 데이터 검증 테스트
+    // http://localhost:8080/aop-test/validate
+    // http://localhost:8080/aop-test/validate?data=
+    // http://localhost:8080/aop-test/validate?data=ob
+    @GetMapping("/validate")
+    @ResponseBody
+    public String testValidate(@RequestParam(defaultValue = "테스트데이터") String data){
+        try{
+            return demoService.validateData(data);
+        }catch (Exception e){
+            return "검증 실패: " + e.getMessage();
+        }
     }
 }

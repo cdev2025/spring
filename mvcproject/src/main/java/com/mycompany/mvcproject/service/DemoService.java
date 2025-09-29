@@ -116,4 +116,19 @@ public class DemoService {
 
         return "중요 계산 결과: " + x + " " + operation + " " + y + " = " + result;
     }
+
+    @Monitored(value="데이터 검증 로직", includeParams = false)
+    public String validateData(String data){
+        System.out.println("[비즈니스 로직] 데이터 검증 수행");
+
+        if(data == null || data.trim().isEmpty()){
+            throw new IllegalArgumentException("데이터 비어있습니다.");
+        }
+
+        if(data.length()<3){
+            throw new IllegalArgumentException("데이터가 너무 짧습니다!");
+        }
+
+        return "\t검증 완료 " + data;
+    }
 }
