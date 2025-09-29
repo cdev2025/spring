@@ -69,4 +69,16 @@ public class AopTestController {
                                 @RequestParam(defaultValue = "20") int b){
         return demoService.calculateSum(a, b);
     }
+
+    // 중요한 계산 테스트
+    // http://localhost:8080/aop-test/important-calc
+    @GetMapping("/important-calc")
+    @ResponseBody
+    public String testImportantCalc(
+            @RequestParam(defaultValue = "10") int x,
+            @RequestParam(defaultValue = "5") int y,
+            @RequestParam(defaultValue = "+") String op
+    ){
+        return demoService.importantCalculation(x, y, op);
+    }
 }

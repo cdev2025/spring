@@ -1,5 +1,6 @@
 package com.mycompany.mvcproject.service;
 
+import com.mycompany.mvcproject.aop.annotation.Monitored;
 import org.springframework.stereotype.Service;
 
 /*
@@ -89,5 +90,30 @@ public class DemoService {
 
         int result = a+b;
         return "계산 결과: " + a + " + " + b + " = " + result;
+    }
+
+    @Monitored("중요한 비즈니스 계산 로직")
+    public String importantCalculation(int x, int y, String operation){
+        System.out.println("[비즈니스 로직] 중요한 계산 수행: " + x + " " + operation + " " + y);
+
+        try{
+            Thread.sleep(300); // 0.3초 지연
+        }catch (InterruptedException e){
+            Thread.currentThread().interrupt();
+        }
+
+        int result;
+        switch (operation){
+            case "+": result = x+y; break;
+            case "-": result = x-y; break;
+            case "*": result = x*y; break;
+            case "/":
+                if(y==0) throw new IllegalArgumentException("0으로 나눌 수 없습니다!!!");
+                result = x/y;
+                break;
+            default: throw new IllegalArgumentException("지원하지 않는 연산: " + operation);
+        }
+
+        return "중요 계산 결과: " + x + " " + operation + " " + y + " = " + result;
     }
 }
