@@ -3,6 +3,7 @@ package com.mycompany.mvcproject.controller;
 import com.mycompany.mvcproject.domain.LoginForm;
 import com.mycompany.mvcproject.domain.User;
 import com.mycompany.mvcproject.service.LoggedUserManagementService;
+import com.mycompany.mvcproject.service.LoginCountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final LoginForm loginForm;
     private final LoggedUserManagementService loggedUserManagementService;
+    private final LoginCountService loginCountService;
 
     @Autowired
-    public UserController(LoginForm loginForm, LoggedUserManagementService loggedUserManagementService) {
+    public UserController(LoginForm loginForm, LoggedUserManagementService loggedUserManagementService, LoginCountService loginCountService) {
         this.loginForm = loginForm;
         this.loggedUserManagementService = loggedUserManagementService;
+        this.loginCountService = loginCountService;
     }
 
     // http://localhost:8080/user/signup
@@ -52,11 +55,17 @@ public class UserController {
                         Model model){
         System.out.println("로그인 처리 요청 - 인스턴스 ID: " + loginForm.getInstanceId() );
 
+        // 로그인 시도 횟수 증가 (성공/실패 관계 없이)
+        loginCountService.incrementAttemptCount();
+
         // RequestScope 빈에 데이터 설정
         loginForm.setEmail(email);
         loginForm.setPassword(password);
 
         if(loginForm.authenticate()){
+            // 로그인 성공
+            // 성공한 로그인 횟수 증가
+            loginCountService.incrementSuccessCount();
             // 세션에 사용자 정보 저장
             loggedUserManagementService.login("테스트사용자", email);
             return "redirect:/main"; //메인 페이지로 리디렉션
