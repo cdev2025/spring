@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>퀴즈</title>
+</head>
+<body>
+    <h1>퀴즈</h1>
+    <form action="/quiz" method="post">
+        <p th:text="${question}"></p>
+        <input type="text" name="answer" placeholder="답을 입력하세요" required autofocus>
+        <button type="submit">제출</button>
+    </form>
+</body>
+</html>
