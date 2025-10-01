@@ -6,15 +6,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-public class TodoConroller {
+public class TodoController {
 
     private final TodoService todoService;
 
     @Autowired
-    public TodoConroller(TodoService todoService) {
+    public TodoController(TodoService todoService) {
         this.todoService = todoService;
     }
 
@@ -36,8 +37,25 @@ public class TodoConroller {
     }
 
     // 새 할 일 추가
+    @PostMapping("/todos")
+    public String addTodo(@RequestParam String title, RedirectAttributes redirectAttributes){
+        try{
+            todoService.addTodo(title);
+            redirectAttributes.addFlashAttribute("message", "할 일이 추가되었습니다.");
+        } catch (IllegalArgumentException e){
+            redirectAttributes.addFlashAttribute("message","오류: " + e.getMessage());
+        }
+
+        return "redirect:/todos";
+    }
 
     // 완료 상태 토클
+    @PostMapping("/todos/{id}/toggle")
+    public String toggleTodo(@PathVariable Long id){
+        todoService.toggleComplete(id);
+        return "redirect:/todos";
+    }
+
 
     // 할일 삭제
     @PostMapping("/todos/{id}/delete")
