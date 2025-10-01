@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo 앱</title>
+</head>
+<body>
+    <h1>Todo 목록</h1>
+
+    <!--  메시지  -->
+    <div th:if="${message}">
+        <p th:text="${message}"></p>
+    </div>
+
+    <!--  통계  -->
+    <div>
+        전체: <span th:text="${totalCount}">0</span> |
+        진행중: <span th:text="${pendingCount}">0</span>  |
+        완료: <span th:text="${completedCount}">0</span>
+    </div>
+
+    <!--  todo 목록  -->
+    <div th:if="${#lists.isEmpty(todos)}">
+        <p>할 일이 없습니다. 새 항목을 추가하세요.</p>
+    </div>
+
+    <table th:if="${!#lists.isEmpty(todos)}">
+        <thead>
+            <tr>
+                <th>상태</th>
+                <th>할 일</th>
+                <th>액션</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="todo : ${todos}">
+                <td th:text="${todo.completed ? '완료' : '진행중'}"></td>
+                <td>
+                    <span th:text="${todo.title}"></span>
+                </td>
+                <td>
+                    <!-- 완료 여부 토글 버튼 -->
+
+                    <!-- 삭제 버튼 -->
+                    <form th:action="@{/todos/{id}/delete(id=${todo.id})}" method="post" onsubmit="return confirm('삭제하시겠습니까?');">
+                        <button type="submit">삭제</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+</body>
+</html>
