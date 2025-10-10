@@ -1,11 +1,15 @@
 package com.example.cat_wiki.controller;
 
+import com.example.cat_wiki.dto.CatRequestDto;
 import com.example.cat_wiki.model.Cat;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,15 +88,34 @@ public class CatController {
     }*/
 
     // 새로운 고양이 추가 : POST
+    @Operation(
+            summary = "새로운 고양이 등록",
+            description = "새로운 고양이 정보를 시스템에 등록합니다. 이름과 품종은 필수이며, 나이는 0살 이상이어야합니다."
+    )
     @PostMapping
     // http://localhost:8080/api/cats
-    public Cat addCat(@RequestBody Cat cat){
-        cat.setId((long) (catList.size() + 1));
-        catList.add(cat);
-        return cat;
+    public ResponseEntity<Cat> addCat(@Valid  @RequestBody CatRequestDto catDto){
+        log.info("=========Adding new cat: {}", catDto.getName());
+
+        // CatReauestDto를 Cat 엔티티로 변환
+ /*       Cat newCat = new Cat();
+        newCat.setName(catDto.getName());
+        newCat.setBreed(catDto.getBreed());
+        newCat.setAge(catDto.getAge()); */
+        Cat newCat = Cat.builder()
+                .id((long) (catList.size() + 1))
+                .name(catDto.getName())
+                .breed(catDto.getBreed())
+                .age(catDto.getAge())
+                .build();
+
+        catList.add(newCat);
+
+        log.info("Successfully added cat widh id: {}", newCat.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(newCat);
     }
 
-    // 고양이 정보 수정 : PUT
+    // 고양이 정보 수정 : PUT / UPDATE
 
     // 고양이 삭제 : DELETE
     // http://localhost:8080/api/cats/1
