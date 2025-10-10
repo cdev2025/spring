@@ -1,6 +1,11 @@
 package com.example.cat_wiki.controller;
 
 import com.example.cat_wiki.model.Cat;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j // SLF4J Logger를 'log' 필드로 자동 생성
+@Tag(name = "Cat Management", description = "고양이 정보 관리 API")
 @RestController
 @RequestMapping("/api/cats")
 public class CatController {
@@ -19,12 +26,23 @@ public class CatController {
         catList.add(new Cat(1L, "Milo", "Siamese", 3));
         catList.add(new Cat(2L, "Luna", "Persian", 2));
         catList.add(new Cat(3L, "Leo", "Maine Coon", 4));
+
+       log.info("Sample cats data initialized: {} cats", catList.size());
     }
 
     // 고양이 리스트 반환 : GET
     /*
     응답: 200 OK + 고양이 리스트 JSON
     * */
+    @Operation(
+            summary = "모든 고양이 조회",
+            description = "등록된 모든 고양이의 정보를 조회합니다."
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "성공적으로 조회됨"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    }
+    )
     @GetMapping
     // http://localhost:8080/api/cats
     public ResponseEntity<List<Cat>> getAllCats(){
