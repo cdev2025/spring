@@ -131,4 +131,20 @@ public class CatController {
         boolean removed = catList.removeIf(c->c.getId().equals((id)));
         return removed ? "Cat removed" : "Cat not found";
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCat( @PathVariable Long id, @Valid @RequestBody CatRequestDto dto){
+        Optional<Cat> foundOpt = catList.stream().filter(c -> c.getId().equals(id)).findFirst();
+        if(foundOpt.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Cat found = foundOpt.get();
+        // 정체 교체
+        found.setName(dto.getName());
+        found.setBreed(dto.getBreed());
+        found.setAge(dto.getAge());
+
+        return ResponseEntity.ok(found);
+    }
 }

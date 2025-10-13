@@ -116,4 +116,37 @@ class CatWikiApplicationTests {
         assertThat(res.getResponse().getErrorMessage()).isEqualTo("Invalid request content.");
     }
 
+    @Test
+    @DisplayName("PUT /api/cats/{id} - 전체 수정 성공")
+    void updateCat_Put_Success() throws Exception{
+        var body = new CatRequestDto("Milo-Updated", "Siamese-Updated", 5);
+
+        mockMvc.perform(put("/api/cats/1").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("Milo-Updated"))
+                .andExpect(jsonPath("$.breed").value("Siamese-Updated"))
+                .andExpect(jsonPath("$.age").value(5));
+    }
+
+    @Test
+    @DisplayName("PUT /api/cats/{id} - 대상 없음 404")
+    void updateCat_Put_NotFound() throws Exception{
+        var body = new CatRequestDto("Ghost", "Unknown", 1);
+
+        mockMvc.perform(put("/api/cats/999").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("PUT /api/cats/{id} - 검증 실패 400 (이름 공백)")
+    void updateCate_Put_BadRequest() throws Exception{
+        var body = new CatRequestDto("", "Persian", 2);
+
+        mockMvc.perform(put("/api/cats/1").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(body)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 }
