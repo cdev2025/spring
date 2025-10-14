@@ -13,10 +13,17 @@ public class UserController {
 
     private final UserService userService;
 
-    // 사용자 생성 api
+    // 사용자 생성
     @PostMapping
     public User createUser(@RequestBody UserDto userDto){
-        return userService.createUser(userDto);
+        // return userService.createUser(userDto);
+        try {
+            return userService.createUserWithRollback(userDto);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new RuntimeException("사용자 생성 중 오류 발생", e);
+        }
+
     }
 
     // 사용자 조회

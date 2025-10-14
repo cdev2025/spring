@@ -26,6 +26,22 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    // 특정 조건에서 트랜잭션을 롤백하는 예제 : 예외 발생하면 롤백
+    @Transactional(rollbackFor = Exception.class)
+    public User createUserWithRollback(UserDto userDto) throws Exception{
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        userRepository.save(user);
+
+        // 강제로 예외 발생
+        if(userDto.getEmail().contains("error")){
+            throw new Exception("강제 예외 발생");
+        }
+
+        return user;
+    }
+
     // 사용자 정보 조회 (id로 정보 조회)
     @Transactional(readOnly = true) // 읽기 전용 트랜잭션 선언
     public User getUserById(Long id){
@@ -41,4 +57,5 @@ public class UserService {
         user.setEmail(userDto.getEmail());
         return userRepository.save(user);
     }
+
 }
