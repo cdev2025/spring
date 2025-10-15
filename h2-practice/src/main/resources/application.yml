@@ -49,4 +49,5 @@ spring:
   sql:
     init:
       # 스키마 초기화 모드
-      mode: always
+      # mode: always
+      mode : never # data.sql 로딩 금지
