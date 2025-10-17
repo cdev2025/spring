@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>게시글 목록</title>
@@ -7,7 +8,26 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h1 class="mb-4">게시글 목록</h1>
+    <!-- 🔥 Spring Security 템플릿 태그 활용 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-4">게시글 목록</h1>
+
+        <!-- 로그인된 사용자 정보 표시 -->
+        <div sec:authorize="isAuthenticated()">
+                <span class="me-3">안녕하세요,
+                    <strong sec:authentication="principal.name">사용자</strong>님!
+                </span>
+            <!-- POST 방식 로그아웃 -->
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger btn-sm">로그아웃</button>
+            </form>
+        </div>
+
+        <!-- 미로그인 사용자 -->
+        <div sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}" class="btn btn-primary btn-sm">로그인</a>
+        </div>
+    </div>
 
     <!-- 알림 메시지 -->
     <div th:if="${message}" class="alert alert-success alert-dismissible fade show">
@@ -30,7 +50,8 @@
             </form>
         </div>
         <div class="col-md-4 text-end">
-            <a th:href="@{/posts/create}" class="btn btn-primary">게시글 작성</a>
+            <!-- 🔥 로그인된 사용자만 게시글 작성 가능 -->
+            <a th:href="@{/posts/create}" class="btn btn-primary" sec:authorize="isAuthenticated()">게시글 작성</a>
         </div>
     </div>
 

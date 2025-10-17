@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title th:text="${post.title}">게시글 상세</title>
@@ -33,10 +34,13 @@
                          th:text="${post.content}">게시글 내용</div>
                 </div>
 
+                <!-- 🔥 조건부 수정/삭제 버튼 (로그인 + 작성자 본인만 표시) -->
                 <div class="card-footer">
                     <div class="d-flex justify-content-between">
                         <a th:href="@{/posts}" class="btn btn-secondary">목록으로</a>
-                        <div>
+                        <!-- Spring Security 표현식으로 권한 체크 -->
+                        <div sec:authorize="isAuthenticated()"
+                             th:if="${currentUser != null and currentUser.name == post.author}">
                             <a th:href="@{/posts/{id}/edit(id=${post.id})}" class="btn btn-warning me-2">수정하기</a>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                                 삭제하기

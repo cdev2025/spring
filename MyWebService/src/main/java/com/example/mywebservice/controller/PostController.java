@@ -1,9 +1,11 @@
 package com.example.mywebservice.controller;
 
 import com.example.mywebservice.dto.PostDto;
+import com.example.mywebservice.entity.User;
 import com.example.mywebservice.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,8 @@ public class PostController {
     // GET /posts
     // http://localhost:8080/posts
     @GetMapping
-    public String list(Model model, @RequestParam(required = false) String keyword)
+    public String list(Model model, @RequestParam(required = false) String keyword,
+                       @AuthenticationPrincipal User user)
     {
         log.info("GET /posts - keyowrd: {}", keyword);
 
@@ -37,14 +40,17 @@ public class PostController {
         }
 
         model.addAttribute("posts", posts);
+        model.addAttribute("currentUser", user);
         return "list";
     }
 
 
     // 게시글 작성 폼
     @GetMapping("/create")
-    public String createForm(Model model){
-        model.addAttribute("post", new PostDto());
+    public String createForm(Model model, @AuthenticationPrincipal User user){
+        PostDto postDto = new PostDto();
+        postDto.setAuthor(user.getName()); // 로그인된 사용자 이름 자동 설정
+        model.addAttribute("post", postDto);
         return "create";
     }
 
@@ -64,18 +70,29 @@ public class PostController {
 
     // 게시글 상세 페이지
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model){
+    public String detail(@PathVariable Long id,
+                         Model model,
+                         @AuthenticationPrincipal User user){
         PostDto post = postService.getPostById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         model.addAttribute("post", post);
+        model.addAttribute("currentUser", user);
         return "detail.html";
     }
 
     // 게시글 수정 폼
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable Long id, Model model){
+    public String editForm(@PathVariable Long id,
+                           Model model,
+                           @AuthenticationPrincipal User user){
         PostDto post = postService.getPostById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        // 권한 체크 : 본인 게시글만 수정 가능
+        if( !post.getAuthor().equals(user.getName())){
+            throw new RuntimeException("본인이 작성한 게시글만 수정할 수 있습니다.");
+        }
+
         model.addAttribute("post", post);
         return "edit";
     }
@@ -97,7 +114,16 @@ public class PostController {
 
     // 게시글 삭제 처리
     @PostMapping("/{id}/delete")
-    public String deletePost(@PathVariable Long id, RedirectAttributes redirectAttributes){
+    public String deletePost(@PathVariable Long id,
+                             @AuthenticationPrincipal User user,
+                             RedirectAttributes redirectAttributes){
+        // 권한 체크
+        PostDto post = postService.getPostById(id)
+                .orElseThrow(()->new RuntimeException("게시글을 찾을 수 없습니다."));
+        if(!post.getAuthor().equals(user.getName())){
+            throw new RuntimeException("본인이 작성한 게시글만 삭제할 수 있습니다.");
+        }
+
         try {
             boolean deleted = postService.deletePost(id);
             if(deleted){

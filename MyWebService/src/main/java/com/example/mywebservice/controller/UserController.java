@@ -31,6 +31,7 @@ public class UserController {
         try{
             userService.save(dto);
             redirectAttributes.addFlashAttribute("message", "회원가입이 완료되었습니다. 로그인해주세요.");
+            return "redirect:/login";
         }catch (Exception e){
             log.error("회원가입 실패", e);
             redirectAttributes.addFlashAttribute("error", e.getMessage());
