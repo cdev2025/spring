@@ -26,7 +26,7 @@ spring:
     encoding: UTF-8
     cache: false # 개발 시 false 설정 -> 실시간 반영
 
-  # H2 Database 설정 (기본: 인메모리)
+  # H2 Database 설정 (파일)
   datasource:
     url: jdbc:h2:file:./data/boardapi;AUTO_SERVER=true   # 파일 모드
     driver-class-name: org.h2.Driver
@@ -64,6 +64,6 @@ spring:
 logging:
   level:
     root: INFO
-    com.example.mywebservice : DEBUG
+    com.example.board : DEBUG
     org.hibernate.SQL : DEBUG
     org.hibernate.orm.jdbc.bind: TRACE

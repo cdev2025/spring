@@ -60,5 +60,6 @@ logging:
   level:
     root: INFO
     com.example.mywebservice : DEBUG
+    org.springframework.security: DEBUG # 보안 디버깅 : 인증/인가 과정, 필터 체인 동작 등 상세히 출력
     org.hibernate.SQL : DEBUG
     org.hibernate.orm.jdbc.bind: TRACE

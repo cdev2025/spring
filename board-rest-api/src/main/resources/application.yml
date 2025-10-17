@@ -59,6 +59,6 @@ spring:
 logging:
   level:
     root: INFO
-    com.example.mywebservice : DEBUG
+    com.example.board : DEBUG
     org.hibernate.SQL : DEBUG
     org.hibernate.orm.jdbc.bind: TRACE

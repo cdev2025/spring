@@ -64,6 +64,7 @@ spring:
 logging:
   level:
     root: INFO
-    com.example.mywebservice : DEBUG
+    com.example.mywebservice : DEBUG # 자세한 흐름
+    org.springframework.security: DEBUG # 보안 디버깅 : 인증/인가 과정, 필터 체인 동작 등 상세히 출력
     org.hibernate.SQL : DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE # SQL쿼리에 바인딩되는 파라미터 값까지 상세하게 출력
