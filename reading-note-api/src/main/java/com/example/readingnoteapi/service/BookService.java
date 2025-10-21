@@ -2,11 +2,14 @@ package com.example.readingnoteapi.service;
 
 import com.example.readingnoteapi.dto.BookDto;
 import com.example.readingnoteapi.entity.Book;
+import com.example.readingnoteapi.entity.enums.Genre;
 import com.example.readingnoteapi.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 독서 노트(Book) 관련 비즈니스 로직을 담당하는 Service 계층
@@ -26,6 +29,18 @@ public class BookService {
      * - 클라이언트로부터 받은 요청 DTO(BookRequest)를 엔티티로 변환 후 DB에 저장
      * - 저장 결과를 응답 DTO(BookResponse)로 반환
      */
+    public BookDto.BookResponse createBook(BookDto.BookRequest request){
+        log.info("새 독서 노트 등록 요청: {}", request.title());
+
+        // DTO -> Entity 변환
+        Book book = request.toEntity();
+
+        // DB 저장
+        Book savedBook = bookRepository.save(book);
+
+        // Entity -> DTO 변환 후 반환
+        return convertToResponse(savedBook);
+    }
 
 
     /*
@@ -33,37 +48,104 @@ public class BookService {
      * - Repository에서 정렬된 결과를 받아 DTO 리스트로 변환
      * - readOnly = true : 읽기 전용 트랜잭션(성능 최적화)
      */
+    @Transactional(readOnly = true)
+    public List<BookDto.BookResponse> getAllBooks(){
+        log.info("모든 독서 노트 조회 요청");
+        return bookRepository.findAllByOrderByRatingDescCreatedAtDesc()
+                .stream()
+                .map(this::convertToResponse)
+                .toList();
+    }
+
 
     /*
      * 특정 독서 노트 조회 : getBookById()
      * - ID로 검색 후 존재하지 않으면 예외 발생
      * */
+    @Transactional(readOnly = true)
+    public BookDto.BookResponse getBookById(Long id){
+        log.info("독서 노트 단일 조외 (ID: {})", id);
+        Book book = findBookById(id);
+        return convertToResponse(book);
+    }
 
     /*
     * 독서 노트 수정 : updateBook()
     * - ID로 기존 엔티티 조회 후 DTO의 값으로 변경
     * - JPA의 변경 감지(Dirty Checking)에 의해 자동 업데이트되는 필드 포함
     * */
+    public BookDto.BookResponse updateBook(Long id, BookDto.BookRequest request){
+        log.info("독서 노트 수정 요청 (ID: {})", id);
+
+        // id로 정보 조회, 없으면 예외 발생
+        Book book = findBookById(id);
+
+        // 필드 값 변경 -> JPA가 변경 감지 후 UPDATEW 수행
+        book.setTitle(request.title());
+        book.setAuthor(request.author());
+        book.setReview(request.review());
+        book.setRating(request.rating());
+        book.setFinishedDate(request.finishedDate());
+        book.setGenre(request.genre());
+        book.setStatus(request.status());
+
+        // save()는 이미 영속화된 엔티티의 변경 내용을 DB에 반영
+        Book updatedBook =  bookRepository.save(book);
+
+        return convertToResponse(updatedBook);
+    }
 
     /*
     * 독서 노트 삭제 : deleteBook()
     * - ID로 책을 조회한 뒤 존재하면 삭제
     * */
+    public void deleteBook(Long id){
+        log.info("독서 노트 삭제 요청 (ID: {})", id);
+
+        Book book = findBookById(id);
+        bookRepository.delete(book);    // DELETE 쿼리 실행
+
+        log.info("독서 노트 삭제 완료");
+    }
 
     /*
     * 제목 키워드 검색 : searchBooksByTitle()
     * - 대소문자 구분 없이 부분 일치 검색 수행
     * */
+    @Transactional(readOnly = true)
+    public List<BookDto.BookResponse> searchBooksByTitle(String keyword){
+        log.info("제목 검색 요청: '{}'", keyword);
+        return bookRepository.findByTitleContainingIgnoreCase(keyword)
+                .stream()
+                .map(this::convertToResponse)
+                .toList();
+    }
 
     /*
-    * 장르별 조회 : getBlooksByGenre()
+    * 장르별 조회 : getBooksByGenre()
     * - 특정 Genre 타입의 책 목록 조회
     * */
+    @Transactional(readOnly = true)
+    public List<BookDto.BookResponse> getBooksByGenre(Genre genre){
+        log.info("장르별 조회 요청: {}", genre);
+        return bookRepository.findByGenre(genre)
+                .stream()
+                .map(this::convertToResponse)
+                .toList();
+    }
 
     /*
     * 고평점(4점 이상) 책 조회 : getHighRatedBooks()
     * - rating >= 4 조건으로 필터링
     * */
+    @Transactional(readOnly = true)
+    public List<BookDto.BookResponse> getHightRatedBooks(){
+        log.info("고평균 독서 노트 조회 (4점 이상)");
+        return bookRepository.findByRatingGreaterThanEqual(4)
+                .stream()
+                .map(this::convertToResponse)
+                .toList();
+    }
 
     //----------------------------------------
     // 내부 헬퍼 메서드

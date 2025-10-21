@@ -1,5 +1,6 @@
 package com.example.readingnoteapi.dto;
 
+import com.example.readingnoteapi.entity.Book;
 import com.example.readingnoteapi.entity.enums.Genre;
 import com.example.readingnoteapi.entity.enums.ReadingStatus;
 import jakarta.validation.constraints.*;
@@ -34,7 +35,21 @@ public class BookDto {
             LocalDate finishedDate,
             Genre genre,
             ReadingStatus status
-    ){}
+    ){
+        // DTO -> Entity
+        public Book toEntity(){
+            return Book.builder()
+                    .title(this.title())
+                    .author(this.author())
+                    .review(this.review())
+                    .rating(this.rating())
+                    .finishedDate(this.finishedDate())
+                    .genre(this.genre())
+                    // status 값이 null이면 기본값 READING 지정
+                    .status(this.status() != null ? this.status() : ReadingStatus.READING)
+                    .build();
+        }
+    }
 
     // 책 정보 응답 DTO
     public record BookResponse(

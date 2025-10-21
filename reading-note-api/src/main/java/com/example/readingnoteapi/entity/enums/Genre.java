@@ -5,7 +5,7 @@ public enum Genre {
     FICTION("소설"),
     NON_FICTION("비소설"),
     SCIENCE("과학"),
-    THECHNOLOGY("기술"),
+    TECHNOLOGY("기술"),
     BUSINESS("비즈니스"),
     SELF_HELP("자기계발"),
     HISTORY("역사"),
