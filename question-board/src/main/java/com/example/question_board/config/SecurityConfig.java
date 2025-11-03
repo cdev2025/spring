@@ -67,13 +67,21 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // 허용할 Origin (개발 환경)
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        // configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+        // ✅ Vite 포트 추가
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "http://localhost:5173",      // Vite 개발 서버
+                "http://127.0.0.1:5173",
+                "http://localhost:3000",      // Create React App (혹시 모를 경우)
+                "http://127.0.0.1:3000"
+        ));
 
         // 허용할 HTTP 메서드
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 
         // 허용할 헤더
         configuration.setAllowedHeaders(Arrays.asList("*"));
+        //configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
 
         // 인증 정보 포함 여부
         configuration.setAllowCredentials(true);

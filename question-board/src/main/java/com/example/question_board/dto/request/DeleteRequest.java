@@ -9,10 +9,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostDeleteRequest {
+public class DeleteRequest {
 
-    @NotNull(message = "게시글 ID는 필수입니다.")
-    private Long postId;
+    @NotNull(message = "ID는 필수입니다.")
+    private Long id;
 
     @NotBlank(message = "비밀번호는 필수입니다.")
     private String password;

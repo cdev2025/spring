@@ -1,5 +1,6 @@
 package com.example.question_board.controller;
 
+import com.example.question_board.dto.request.DeleteRequest;
 import com.example.question_board.dto.request.ReplyRequest;
 import com.example.question_board.dto.response.ReplyResponse;
 import com.example.question_board.service.ReplyService;
@@ -12,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 댓글(답변) 관리 API
@@ -46,17 +46,16 @@ public class ReplyController {
     }
 
     @Operation(summary = "댓글 삭제", description = "댓글 ID와 비밀번호를 이용하여 댓글을 삭제합니다.")
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     public ResponseEntity<Void> deleteReply(
-            @Parameter(description = "댓글 ID", required = true)
-            @PathVariable("id") Long replyId,
-            @RequestBody Map<String, String> request
+            @Valid @RequestBody DeleteRequest request
     ) {
-        String password = request.get("password");
-        if (password == null || password.isBlank()) {
+        Long id = request.getId();
+        String password = request.getPassword();
+        if (request.getPassword() == null || password.isBlank()) {
             throw new IllegalArgumentException("비밀번호를 입력해주세요.");
         }
-        replyService.deleteReply(replyId, password);
+        replyService.deleteReply(id, password);
         return ResponseEntity.noContent().build();
     }
 }

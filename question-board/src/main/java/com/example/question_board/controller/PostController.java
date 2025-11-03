@@ -1,6 +1,6 @@
 package com.example.question_board.controller;
 
-import com.example.question_board.dto.request.PostDeleteRequest;
+import com.example.question_board.dto.request.DeleteRequest;
 import com.example.question_board.dto.request.PostRequest;
 import com.example.question_board.dto.response.PostResponse;
 import com.example.question_board.service.PostService;
@@ -79,8 +79,7 @@ public class PostController {
     @Operation(summary = "게시글 삭제", description = "게시글 ID와 비밀번호를 이용하여 게시글을 삭제합니다.")
     @DeleteMapping
     public ResponseEntity<Void> deletePost(
-            @Parameter(description = "게시글 ID", required = true)
-            @Valid @RequestBody PostDeleteRequest request
+            @Valid @RequestBody DeleteRequest request
     ) {
         postService.deletePost(request);
         return ResponseEntity.noContent().build();

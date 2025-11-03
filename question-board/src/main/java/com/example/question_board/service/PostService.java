@@ -1,6 +1,6 @@
 package com.example.question_board.service;
 
-import com.example.question_board.dto.request.PostDeleteRequest;
+import com.example.question_board.dto.request.DeleteRequest;
 import com.example.question_board.dto.request.PostRequest;
 import com.example.question_board.dto.response.PostResponse;
 import com.example.question_board.entity.Post;
@@ -101,8 +101,8 @@ public class PostService {
      * 게시글 삭제 (Soft Delete)
      */
     @Transactional
-    public void deletePost(PostDeleteRequest request) {
-        Post post = findPostById(request.getPostId());
+    public void deletePost(DeleteRequest request) {
+        Post post = findPostById(request.getId());
         verifyPassword(request.getPassword(), post.getPassword());
         post.changeStatus(PostStatus.DELETED);
     }
